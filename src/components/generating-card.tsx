@@ -33,6 +33,7 @@ export const GeneratingCard = forwardRef<
           height={200}
           width={200}
           animationData={loading}
+          pause={props.done}
           loop={!props.done}
         />
         <AnimatePresence mode={"wait"}>
