@@ -8,13 +8,17 @@ import {
 import { Lottie } from "@/lottie/lottie";
 import loading from "@/lottie/lotties/loading.json";
 import { AnimatePresence, motion } from "framer-motion";
+import { forwardRef } from "react";
 
-export const GeneratingCard = (props: {
-  done: boolean;
-  regenerate: () => void;
-}) => {
+export const GeneratingCard = forwardRef<
+  HTMLElement,
+  {
+    done: boolean;
+    regenerate: () => void;
+  }
+>((props, ref) => {
   return (
-    <StateCardContainer>
+    <StateCardContainer ref={ref}>
       <StateCard
         elevation={props.done ? 0 : 5}
         layoutId={"generating"}
@@ -65,4 +69,5 @@ export const GeneratingCard = (props: {
       {!props.done && <StateCardBehind layoutId={"visual-abstract"} />}
     </StateCardContainer>
   );
-};
+});
+GeneratingCard.displayName = "GeneratingCard";

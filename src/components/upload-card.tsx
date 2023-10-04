@@ -8,16 +8,16 @@ import {
   StateCardContainer,
   CardHeader,
 } from "@/components/state-card";
-import { useRef } from "react";
+import { forwardRef, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
-export const UploadCard = ({
-  file,
-  setFile,
-}: {
-  file: File | null;
-  setFile: (file: null | File) => void;
-}) => {
+export const UploadCard = forwardRef<
+  HTMLElement,
+  {
+    file: File | null;
+    setFile: (file: null | File) => void;
+  }
+>(({ file, setFile }, ref) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -38,7 +38,7 @@ export const UploadCard = ({
     }
   };
   return (
-    <StateCardContainer>
+    <StateCardContainer ref={ref}>
       <StateCard elevation={!file ? 5 : 0} zIndex={4} layoutId={"upload"}>
         <CardHeader
           completed={file != null}
@@ -104,4 +104,6 @@ export const UploadCard = ({
       {!file && <StateCardBehind layoutId={"generating"} />}
     </StateCardContainer>
   );
-};
+});
+
+UploadCard.displayName = "UploadCard";

@@ -1,25 +1,33 @@
-import { PropsWithChildren } from "react";
+import { forwardRef, PropsWithChildren } from "react";
 import { Box, Card, Stack, Typography } from "@mui/material";
 import { AnimatePresence, motion } from "framer-motion";
 import { Lottie } from "@/lottie/lottie";
 import checkmark from "@/lottie/lotties/checkmark.json";
 
-export const StateCardContainer = (props: PropsWithChildren) => {
-  return (
-    <Box
-      sx={{
-        position: "relative",
-        minHeight: 350,
-        width: {
-          lg: 350,
-          xs: "100%",
-        },
-      }}
-    >
-      {props.children}
-    </Box>
-  );
-};
+export const StateCardContainer = forwardRef<HTMLElement, PropsWithChildren>(
+  (props, ref) => {
+    return (
+      <Box
+        ref={ref}
+        sx={{
+          position: "relative",
+          minHeight: 350,
+          width: {
+            lg: 350,
+            xs: "100%",
+          },
+          paddingBottom: {
+            lg: "0",
+            xs: 5,
+          },
+        }}
+      >
+        {props.children}
+      </Box>
+    );
+  },
+);
+StateCardContainer.displayName = "StateCardContainer";
 export const StateCard = (
   props: PropsWithChildren<{
     elevation?: number;

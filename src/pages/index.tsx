@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { Box, Stack } from "@mui/material";
 import { UploadCard } from "@/components/upload-card";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useUpload } from "@/api/api";
 import { GeneratingCard } from "@/components/generating-card";
 import { VisualAbstractCard } from "@/components/visual-abstract-card";
@@ -13,10 +13,43 @@ export default function Home() {
   const [file, setFile] = useState<null | File>(null);
   const { mutate, data, reset } = useUpload();
   const [startAnimation, setStartAnimation] = useState(false);
+  const state = file ? (data ? "result" : "generating") : "idle";
   const setFileAndUpload = (file: null | File) => {
     setFile(file);
     mutate();
   };
+  const idleElement = useRef<HTMLElement>(null);
+  const resultElement = useRef<HTMLDivElement>(null);
+  const generatingElement = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      switch (state) {
+        case "generating":
+          generatingElement.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "end",
+          });
+          break;
+        case "idle":
+          idleElement.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "end",
+          });
+          break;
+        case "result":
+          resultElement.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "end",
+          });
+          break;
+      }
+    }, 700);
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [state]);
+
   return (
     <>
       <Head>
@@ -92,9 +125,14 @@ export default function Home() {
             }}
             spacing={2}
           >
-            <UploadCard file={file} setFile={setFileAndUpload} />
+            <UploadCard
+              ref={idleElement}
+              file={file}
+              setFile={setFileAndUpload}
+            />
             {file && (
               <GeneratingCard
+                ref={generatingElement}
                 regenerate={() => {
                   reset();
                   mutate();
@@ -103,7 +141,9 @@ export default function Home() {
               />
             )}
           </Stack>
-          {data && file && <VisualAbstractCard imageSrc={data.imageUrl} />}
+          {data && file && (
+            <VisualAbstractCard ref={resultElement} imageSrc={data.imageUrl} />
+          )}
         </Stack>
       </Box>
     </>
