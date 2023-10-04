@@ -1,24 +1,22 @@
 import Head from "next/head";
-import { Box, LinearProgress, Stack, Typography } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import { UploadCard } from "@/components/upload-card";
-import { StateCard } from "@/components/state-card";
-import { Lottie } from "@/lottie/lottie";
-import loading from "@/lottie/lotties/loading.json";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useUpload } from "@/api/api";
 import { GeneratingCard } from "@/components/generating-card";
-import {VisualAbstractCard} from "@/components/visual-abstract-card";
+import { VisualAbstractCard } from "@/components/visual-abstract-card";
+import Image from "next/image";
+import { Lottie } from "@/lottie/lottie";
+import heart from "@/lottie/lotties/heart.json";
 
 export default function Home() {
   const [file, setFile] = useState<null | File>(null);
-  const { mutate, data } = useUpload();
+  const { mutate, data, reset } = useUpload();
+  const [startAnimation, setStartAnimation] = useState(false);
   const setFileAndUpload = (file: null | File) => {
     setFile(file);
     mutate();
   };
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
   return (
     <>
       <Head>
@@ -50,15 +48,64 @@ export default function Home() {
         <meta name="msapplication-TileColor" content="#da532c" />
         <meta name="theme-color" content="#ffffff" />
       </Head>
-      <Stack component={"main"} sx={{ margin: "5% auto", maxWidth: 730 }} direction={'column'} gap={6}>
-        <Stack direction={"row"} spacing={2} justifyContent={file ? "space-between" : "space-evenly"}>
-          <UploadCard file={file} setFile={setFileAndUpload} />
-          {file && <GeneratingCard done={data !== undefined} />}
+      <Box sx={{ marginLeft: 2, marginRight: 2 }}>
+        <Stack
+          sx={{ maxWidth: 300, margin: "0 auto", marginBottom: 4 }}
+          direction={"row"}
+          alignItems={"center"}
+          justifyContent={"space-between"}
+          onMouseLeave={() => setStartAnimation(false)}
+          onMouseEnter={() => setStartAnimation(true)}
+        >
+          <Image
+            style={{ height: 32, width: "auto" }}
+            width={97}
+            height={32}
+            src={"/mind-the-graph-logo.png"}
+            alt={"Mind the graph logo"}
+          />
+          <Lottie
+            height={50}
+            width={50}
+            animationData={heart}
+            loop={startAnimation}
+          />
+          <Image
+            style={{ height: 32, width: "auto" }}
+            width={177}
+            height={45}
+            src={"/paperpal-logo.svg"}
+            alt={"Paperpal logo"}
+          />
         </Stack>
-        <Stack direction={"row"} spacing={2} justifyContent={"space-evenly"}>
-          {data && file && <VisualAbstractCard imageSrc={data.imageUrl} /> }
+        <Stack
+          component={"main"}
+          sx={{ margin: "0 auto", maxWidth: 730 }}
+          direction={"column"}
+          gap={{ lg: 3, xs: 2 }}
+        >
+          <Stack
+            direction={{ lg: "row", xs: "column" }}
+            justifyContent={{
+              lg: file ? "space-between" : "space-evenly",
+              xs: "flex-start",
+            }}
+            spacing={2}
+          >
+            <UploadCard file={file} setFile={setFileAndUpload} />
+            {file && (
+              <GeneratingCard
+                regenerate={() => {
+                  reset();
+                  mutate();
+                }}
+                done={data !== undefined}
+              />
+            )}
+          </Stack>
+          {data && file && <VisualAbstractCard imageSrc={data.imageUrl} />}
         </Stack>
-      </Stack>
+      </Box>
     </>
   );
 }

@@ -64,6 +64,9 @@ export const Lottie = (props: LottieProps) => {
   useEffect(() => {
     if (controls.current) {
       controls.current.setLoop(loop ?? true);
+      if (loop) {
+        controls.current.play();
+      }
     }
   }, [loop, controls.current]);
   return useMemo(

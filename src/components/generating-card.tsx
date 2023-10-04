@@ -9,10 +9,17 @@ import { Lottie } from "@/lottie/lottie";
 import loading from "@/lottie/lotties/loading.json";
 import { AnimatePresence, motion } from "framer-motion";
 
-export const GeneratingCard = (props: { done: boolean }) => {
+export const GeneratingCard = (props: {
+  done: boolean;
+  regenerate: () => void;
+}) => {
   return (
     <StateCardContainer>
-      <StateCard layoutId={"generating"} zIndex={3}>
+      <StateCard
+        elevation={props.done ? 0 : 5}
+        layoutId={"generating"}
+        zIndex={3}
+      >
         <CardHeader
           completed={props.done}
           captionIdle={"Generating Visual Abstract"}
@@ -42,6 +49,7 @@ export const GeneratingCard = (props: { done: boolean }) => {
               exit={{ opacity: 0, translateY: 15 }}
               component={motion.button}
               variant={"text"}
+              onClick={props.regenerate}
             >
               Generate another one
             </Button>

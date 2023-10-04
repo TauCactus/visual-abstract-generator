@@ -9,8 +9,11 @@ export const StateCardContainer = (props: PropsWithChildren) => {
     <Box
       sx={{
         position: "relative",
-        width: 350,
         minHeight: 350,
+        width: {
+          lg: 350,
+          xs: "100%",
+        },
       }}
     >
       {props.children}
@@ -18,17 +21,23 @@ export const StateCardContainer = (props: PropsWithChildren) => {
   );
 };
 export const StateCard = (
-  props: PropsWithChildren<{ zIndex?: number; layoutId?: string }>,
+  props: PropsWithChildren<{
+    elevation?: number;
+    zIndex?: number;
+    layoutId?: string;
+  }>,
 ) => {
   return (
     <Card
-      elevation={3}
+      elevation={props.elevation ?? 2}
       component={motion.div}
       layoutId={props.layoutId}
-      initial={{ rotate: 0, width: 350, height: 350 }}
-      animate={{ rotate: 0, width: 350, height: 350 }}
+      initial={{ rotate: 0, minWidth: 350, height: 350 }}
+      animate={{ rotate: 0, minWidth: 350, height: 350 }}
       sx={{
         position: "relative",
+        minHeight: 350,
+        minWidth: 350,
         padding: 2,
         display: "flex",
         justifyContent: "space-between",
@@ -36,6 +45,10 @@ export const StateCard = (
         gap: 1,
         flexDirection: "column",
         zIndex: props.zIndex ?? 2,
+        width: {
+          lg: 350,
+          xs: "100%",
+        },
       }}
     >
       {props.children}
@@ -56,21 +69,20 @@ export const StateCardBehind = (
         rotate: 0,
         top: 0,
         left: 0,
-        width: 350,
-          height: 350,
+        minWidth: 350,
+        height: 350,
       }}
       animate={{
         rotate: 3,
         opacity: 1,
         top: 10,
         left: 10,
-          height: 350,
+        height: 350,
         transition: { delay: 0.3 },
-        width: 350,
+        minWidth: 350,
       }}
       sx={{
         position: "absolute",
-        width: 350,
         padding: 2,
         display: "flex",
         justifyContent: "space-between",
@@ -78,6 +90,10 @@ export const StateCardBehind = (
         gap: 1,
         flexDirection: "column",
         zIndex: 1,
+        width: {
+          lg: 350,
+          xs: "100%",
+        },
       }}
     >
       {props.children}
@@ -105,6 +121,7 @@ export const CardHeader = ({
       <AnimatePresence mode={"wait"} initial={false}>
         {!completed && (
           <Typography
+            sx={{ textAlign: "center" }}
             initial={{ opacity: 0, translateY: -15 }}
             animate={{ opacity: 1, translateY: 0 }}
             exit={{ opacity: 0, translateY: -15 }}
@@ -117,6 +134,7 @@ export const CardHeader = ({
         )}
         {completed && (
           <Typography
+            sx={{ textAlign: "center" }}
             initial={{ opacity: 0, translateY: 15 }}
             animate={{ opacity: 1, translateY: 0 }}
             exit={{ opacity: 0, translateY: 15 }}
