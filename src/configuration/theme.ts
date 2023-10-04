@@ -29,6 +29,9 @@ export const theme = createTheme({
   palette: {
     mode: "light",
     grey,
+    primary: {
+      main: "#dd1d6f",
+    },
   },
   typography: {
     fontFamily: roboto.style.fontFamily,
