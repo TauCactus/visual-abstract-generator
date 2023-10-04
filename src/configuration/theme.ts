@@ -41,6 +41,7 @@ export const theme = createTheme({
       defaultProps: {
         component: motion.button,
         whileHover: { scale: 1.1 },
+        whileTap: { scale: 0.9 },
         animate: { scale: 1 },
       } as any,
       styleOverrides: {
