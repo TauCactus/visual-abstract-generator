@@ -46,7 +46,7 @@ export default function Home() {
         />
         <link rel="manifest" href="/site.webmanifest" />
         <meta name="msapplication-TileColor" content="#da532c" />
-        <meta name="theme-color" content="#ffffff" />
+        <meta name="theme-color" content="#f5f5f5" />
       </Head>
       <Box sx={{ marginLeft: 2, marginRight: 2 }}>
         <Stack

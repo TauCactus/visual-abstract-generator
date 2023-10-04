@@ -58,6 +58,7 @@ export const theme = createTheme({
       styleOverrides: {
         html: {
           overflowX: "hidden",
+          background: grey[100],
         },
         body: {
           overflowX: "hidden",
