@@ -28,19 +28,19 @@ export default function Home() {
         case "generating":
           generatingElement.current?.scrollIntoView({
             behavior: "smooth",
-            block: "end",
+            block: "center",
           });
           break;
         case "idle":
           idleElement.current?.scrollIntoView({
             behavior: "smooth",
-            block: "end",
+            block: "center",
           });
           break;
         case "result":
           resultElement.current?.scrollIntoView({
             behavior: "smooth",
-            block: "end",
+            block: "center",
           });
           break;
       }
