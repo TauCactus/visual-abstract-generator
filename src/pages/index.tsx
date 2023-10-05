@@ -81,6 +81,7 @@ export default function Home() {
         <meta name="msapplication-TileColor" content="#da532c" />
         <meta name="theme-color" content="#f5f5f5" />
       </Head>
+      Hello world
       <Box sx={{ marginLeft: 2, marginRight: 2 }}>
         <Stack
           sx={{ maxWidth: 300, margin: "0 auto", marginBottom: 4 }}
