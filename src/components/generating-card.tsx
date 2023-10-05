@@ -6,7 +6,7 @@ import {
   StateCardContainer,
 } from "@/components/state-card";
 import { Lottie } from "@/lottie/lottie";
-import loading from "@/lottie/lotties/loading.json";
+import reading from "@/lottie/lotties/reading.json";
 import { AnimatePresence, motion } from "framer-motion";
 import { forwardRef } from "react";
 
@@ -26,13 +26,13 @@ export const GeneratingCard = forwardRef<
       >
         <CardHeader
           completed={props.done}
-          captionIdle={"Generating Visual Abstract"}
-          captionCompleted={"Generation complete"}
+          captionIdle={"Analyzing manuscript"}
+          captionCompleted={"Analysis complete"}
         />
         <Lottie
           height={200}
           width={200}
-          animationData={loading}
+          animationData={reading}
           pause={props.done}
           loop={!props.done}
         />
