@@ -8,15 +8,21 @@ import { VisualAbstractCard } from "@/components/visual-abstract-card";
 import Image from "next/image";
 import { Lottie } from "@/lottie/lottie";
 import heart from "@/lottie/lotties/heart.json";
+import {useRouter} from "next/router";
 
 export default function Home() {
   const [file, setFile] = useState<null | File>(null);
-  const { mutate, data, reset } = useUpload();
+  const { mutateAsync, data, reset } = useUpload();
   const [startAnimation, setStartAnimation] = useState(false);
   const state = file ? (data ? "result" : "generating") : "idle";
-  const setFileAndUpload = (file: null | File) => {
-    setFile(file);
-    mutate();
+  const router = useRouter();
+  const setFileAndUpload = async (file: null | File) => {
+    if(file){
+      setFile(file);
+      const response = await mutateAsync(file);
+      router.query.document = response.id;
+      await router.push(router);
+    }
   };
   const idleElement = useRef<HTMLElement>(null);
   const resultElement = useRef<HTMLDivElement>(null);
@@ -133,9 +139,8 @@ export default function Home() {
             {file && (
               <GeneratingCard
                 ref={generatingElement}
-                regenerate={() => {
+                regenerate={async () => {
                   reset();
-                  mutate();
                 }}
                 done={data !== undefined}
               />
