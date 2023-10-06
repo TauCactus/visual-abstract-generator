@@ -6,6 +6,7 @@ import { Button } from "@mui/material";
 import { templateThree } from "@/mtg-templates/template-3/template-three-form";
 import { templateFour } from "@/mtg-templates/template-4/template-four-form";
 import dynamic from "next/dynamic";
+import { templateSeven } from "@/mtg-templates/template-7/template-seven-form";
 
 const DynamicCanvas = dynamic(() => import("../components/fabric-canvas"), {
   ssr: false,
@@ -51,6 +52,9 @@ export default function Home() {
           </Button>
           <Button onClick={() => changeTemplate(templateFour)}>
             Template 4
+          </Button>
+          <Button onClick={() => changeTemplate(templateSeven)}>
+            Template 7
           </Button>
         </div>
         <textarea
