@@ -2,7 +2,7 @@ import Head from "next/head";
 import { useState } from "react";
 import { templateOne } from "@/mtg-templates/template-1/template-one-form";
 import { Template } from "@/mtg-templates/template";
-import { Button, Stack } from "@mui/material";
+import { Box, Button, Stack } from "@mui/material";
 import { templateThree } from "@/mtg-templates/template-3/template-three-form";
 import { templateFour } from "@/mtg-templates/template-4/template-four-form";
 import dynamic from "next/dynamic";
@@ -41,6 +41,12 @@ export default function Home() {
   return (
     <>
       <Head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Francois+One&family=Nunito:wght@400;700&family=Roboto:wght@400;700&display=swap"
+          rel="stylesheet"
+        />
         <title>Visual Abstract Generator</title>
       </Head>
       <Stack

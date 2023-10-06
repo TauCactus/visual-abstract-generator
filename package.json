@@ -22,6 +22,7 @@
     "react-dom": "^18",
     "react-query": "^3.39.3",
     "uuid": "^9.0.1",
+    "webfontloader": "^1.6.28",
     "zod": "^3.22.4",
     "zod-error": "^1.5.0"
   },
@@ -32,6 +33,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@types/uuid": "^9.0.4",
+    "@types/webfontloader": "^1.6.35",
     "eslint": "^8",
     "eslint-config-next": "13.5.4",
     "i": "^0.3.7",
