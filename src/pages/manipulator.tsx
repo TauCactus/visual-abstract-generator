@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { FabricCanvas } from "@/components/fabric-canvas";
 import { useEffect, useState } from "react";
-import json from "../mtg-templates/template-1/template.json";
+import json from "../mtg-templates/template-3/template-3.json";
 function getLeftandTopSkew(obj: any) {
   return { left: obj.backgroundImage.left, top: obj.backgroundImage.top };
 }

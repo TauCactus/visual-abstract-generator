@@ -1,78 +1,70 @@
 import Head from "next/head";
-import { FabricCanvas } from "@/components/fabric-canvas";
-import { generateMock } from "@anatine/zod-mock";
-import { useState } from "react";
-import {
-  TemplateOneForm,
-  templateOneFormat,
-} from "@/mtg-templates/template-1/template-one-form";
-import templateoOne from "@/mtg-templates/template-1/template-one.json";
-import parse from "json-templates";
-import { ErrorMessageOptions, generateErrorMessage } from "zod-error";
+import {FabricCanvas} from "@/components/fabric-canvas";
+import {useState} from "react";
+import {templateOne} from "@/mtg-templates/template-1/template-one-form";
+import {Template} from "@/mtg-templates/template";
+import {Button} from "@mui/material";
+import {templateThree} from "@/mtg-templates/template-3/template-three-form";
 
-const defaultMock = generateMock(TemplateOneForm, {
-  mockeryMapper: (keyName, fakerInstance) => {
-    if (keyName.includes("image")) {
-      return () =>
-        "https://s3-us-west-2.amazonaws.com/svg-dev.mindthegraph.com/shapes/basic_square/basic_square-02.svg";
-    } else {
-      return () => "Your text";
-    }
-  },
-});
-const options: ErrorMessageOptions = {
-  delimiter: {
-    error: " 🔥 ",
-  },
-  transform: ({ errorMessage, index }) =>
-    `Error #${index + 1}: ${errorMessage}`,
-};
 export default function Home() {
-  const templateOne = parse(templateoOne);
-  const [data, setData] = useState(JSON.stringify(defaultMock));
-  const [error, setError] = useState("");
-  const [json, setJson] = useState(() => {
-    const parameters = TemplateOneForm.parse(JSON.parse(data));
-    return templateOne(parameters);
-  });
+    const [template, setTemplate] = useState(templateOne);
+    const [data, setData] = useState(template.sampleInput);
+    const [error, setError] = useState("");
+    const [json, setJson] = useState(() => {
+        const result = template.buildJson(data);
+        if(result.success){
+            return result.json;
+        }
+        else {
+            throw new Error("All wrong :(");
+        }
+    });
 
-  return (
-    <>
-      <Head>
-        <title>Visual Abstract Generator</title>
-      </Head>
-      <div style={{ padding: 30 }}>
+    const changeTemplate = (nextTemplate : Template<any>) =>{
+        setTemplate(nextTemplate);
+        const nextData = nextTemplate.sampleInput;
+        setData(nextData)
+        const result = nextTemplate.buildJson(nextData);
+        if(result.success){
+            setJson(result.json);
+        }
+        else {
+            throw new Error("All wrong :(");
+        }
+    }
+
+    return (
+        <>
+            <Head>
+                <title>Visual Abstract Generator</title>
+            </Head>
+            <div style={{padding: 30}}>
+                <div>
+                    <Button onClick={()=>changeTemplate(templateOne)}>Template 1</Button>
+                    <Button onClick={()=>changeTemplate(templateThree)}>Template 3</Button>
+                </div>
         <textarea
-          style={{ height: 500, width: 500 }}
-          value={data}
-          onChange={(e) => {
-            let parameterInput = e.target.value;
-            setData(parameterInput);
-            let parsedData = null;
-            try {
-              parsedData = JSON.parse(parameterInput);
-            } catch (err) {
-              setError("Invalid json");
-            }
-            if (parsedData) {
-              const safeParsed = TemplateOneForm.safeParse(parsedData);
-              if (safeParsed.success) {
-                setJson(templateOne(safeParsed));
-              } else {
-                setError(
-                  generateErrorMessage(safeParsed.error.issues, options),
-                );
-              }
-            }
-          }}
+            style={{height: 500, width: 500}}
+            value={data}
+            onChange={(e) => {
+                let parameterInput = e.target.value;
+                setData(parameterInput);
+                const result = template.buildJson(parameterInput);
+                if(result.success) {
+                    setJson(result.json);
+                }
+                else {
+                    setError(result.error);
+                }
+            }}
         />
-        <p>{error}</p>
-        <FabricCanvas
-          json={json}
-          height={templateOneFormat.height}
-          width={templateOneFormat.width}
-        />
-      </div>
-    </>
-  );
+                <p>{error}</p>
+                <FabricCanvas
+                    json={json}
+                    height={template.height}
+                    width={template.width}
+                />
+            </div>
+        </>
+    );
 }
