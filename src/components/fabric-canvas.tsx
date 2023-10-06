@@ -1,11 +1,13 @@
 import { fabric } from "fabric";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 const FabricCanvas = (props: {
+  dontScaleImage?: boolean;
   json: unknown;
   height: number;
   width: number;
 }) => {
   const [isSSR, setIsSSR] = useState(true);
+  const instanceRef = useRef<fabric.Canvas>(null);
   useEffect(() => {
     if (isSSR) {
       setIsSSR(false);
@@ -20,7 +22,35 @@ const FabricCanvas = (props: {
       backgroundColor: "transparent",
       preserveObjectStacking: true,
     });
-    instance.loadFromJSON(props.json, () => {});
+    (instanceRef.current as any) = instance;
+    instance.clear();
+    instance.renderAll();
+    instance.renderAndReset();
+    instance.requestRenderAll();
+    instance.loadFromJSON(props.json, () => {
+      if (!(props.dontScaleImage ?? false)) {
+        instance.forEachObject(function (obj) {
+          if (obj instanceof fabric.Image) {
+            if (obj.name?.includes("image")) {
+              console.log(obj.name);
+              obj.dispose();
+              fabric.Image.fromURL(obj.getSrc(), (img) => {
+                const scaleX = (obj.width ?? 1) / (img.width ?? 1);
+                const scaleY = (obj.height ?? 1) / (img.height ?? 1);
+                const scale = Math.min(scaleX, scaleY);
+                img.scale(scale);
+                img.left = obj.left;
+                img.top = obj.top;
+                img.originY = "center";
+                img.originX = "center";
+                instance.add(img);
+              });
+            }
+          }
+        });
+        instance.renderAll();
+      }
+    });
   }, [props.json, isSSR]);
   if (isSSR) {
     return <div></div>;

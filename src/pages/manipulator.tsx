@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
-import json from "../mtg-templates/template-7/template-seven.json";
+import json from "../mtg-templates/template-3/template-three.json";
 import dynamic from "next/dynamic";
 
 const DynamicCanvas = dynamic(() => import("../components/fabric-canvas"), {
@@ -116,6 +116,10 @@ function applyCandidates(obj: any, substitutes: (string | null)[]) {
     }
     if (object.type === "image") {
       object.src = substitutes[index] ?? object.src;
+      object.name = substitutes[index]?.substring(
+        2,
+        (substitutes[index]?.length ?? 0) - 2,
+      );
     }
     if (object.type === "textbox") {
       object.text = substitutes[index] ?? object.text;
@@ -198,6 +202,7 @@ export default function Home() {
       })}
       {appliedTemplateValues && (
         <DynamicCanvas
+          dontScaleImage
           json={appliedTemplateValues}
           height={height}
           width={width}

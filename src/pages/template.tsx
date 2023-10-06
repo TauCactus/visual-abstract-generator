@@ -14,7 +14,7 @@ const DynamicCanvas = dynamic(() => import("../components/fabric-canvas"), {
   loading: () => <p>Loading...</p>,
 });
 export default function Home() {
-  const [selectedTemplate, setSelectedTemplate] = useState(templateOne);
+  const [selectedTemplate, setSelectedTemplate] = useState(templateThree);
   const [data, setData] = useState(selectedTemplate.sampleInput);
   const [error, setError] = useState("");
   const [json, setJson] = useState(() => {
