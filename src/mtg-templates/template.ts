@@ -97,7 +97,7 @@ export class Template<T extends ZodTypeAny> {
 function mocker<T extends ZodTypeAny>(template: T) {
   return generateMock(template, {
     mockeryMapper: (keyName, fakerInstance) => {
-      if (keyName.includes("image")) {
+      if (keyName.toLowerCase().includes("image")) {
         return () =>
           "https://s3-us-west-2.amazonaws.com/svg-dev.mindthegraph.com/shapes/basic_square/basic_square-02.svg";
       } else {

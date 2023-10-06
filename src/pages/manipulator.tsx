@@ -116,10 +116,12 @@ function applyCandidates(obj: any, substitutes: (string | null)[]) {
     }
     if (object.type === "image") {
       object.src = substitutes[index] ?? object.src;
-      object.name = substitutes[index]?.substring(
-        2,
-        (substitutes[index]?.length ?? 0) - 2,
-      );
+      object.name = substitutes[index]?.includes("{{")
+        ? substitutes[index]?.substring(
+            2,
+            (substitutes[index]?.length ?? 0) - 2,
+          )
+        : "";
     }
     if (object.type === "textbox") {
       object.text = substitutes[index] ?? object.text;

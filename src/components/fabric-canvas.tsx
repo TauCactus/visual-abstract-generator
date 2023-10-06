@@ -31,7 +31,7 @@ const FabricCanvas = (props: {
       if (!(props.dontScaleImage ?? false)) {
         instance.forEachObject(function (obj) {
           if (obj instanceof fabric.Image) {
-            if (obj.name?.includes("image")) {
+            if (obj.name?.toLowerCase().includes("image")) {
               console.log(obj.name);
               obj.dispose();
               fabric.Image.fromURL(obj.getSrc(), (img) => {
