@@ -18,7 +18,8 @@ const TemplateFourForm = z.object({
 });
 
 export const templateFour = new Template({
-  id: "template-3",
+  previewUrl: "/template-preview/template-4.png",
+  id: "template-4",
   inputParser: TemplateFourForm,
   jsonTemplate: jsonTemplate,
   width: 500,

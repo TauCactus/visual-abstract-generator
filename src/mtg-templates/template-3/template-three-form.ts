@@ -1,6 +1,6 @@
 import { z } from "zod";
-import {Template} from "@/mtg-templates/template";
-import jsonTemplate from "./template-three.json"
+import { Template } from "@/mtg-templates/template";
+import jsonTemplate from "./template-three.json";
 
 const TemplateThreeForm = z.object({
   title: z.string().max(59, "Title is max 59 chars"),
@@ -15,4 +15,11 @@ const TemplateThreeForm = z.object({
   imageThree: z.string(),
 });
 
-export const templateThree = new Template({id: "template-3", inputParser: TemplateThreeForm, jsonTemplate: jsonTemplate, width: 500, height: 200});
+export const templateThree = new Template({
+  previewUrl: "/template-preview/template-3.png",
+  id: "template-3",
+  inputParser: TemplateThreeForm,
+  jsonTemplate: jsonTemplate,
+  width: 500,
+  height: 200,
+});

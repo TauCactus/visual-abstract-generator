@@ -2,22 +2,23 @@ import Head from "next/head";
 import { useState } from "react";
 import { templateOne } from "@/mtg-templates/template-1/template-one-form";
 import { Template } from "@/mtg-templates/template";
-import { Button } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import { templateThree } from "@/mtg-templates/template-3/template-three-form";
 import { templateFour } from "@/mtg-templates/template-4/template-four-form";
 import dynamic from "next/dynamic";
 import { templateSeven } from "@/mtg-templates/template-7/template-seven-form";
 
+const templates = [templateOne, templateThree, templateFour, templateSeven];
 const DynamicCanvas = dynamic(() => import("../components/fabric-canvas"), {
   ssr: false,
   loading: () => <p>Loading...</p>,
 });
 export default function Home() {
-  const [template, setTemplate] = useState(templateOne);
-  const [data, setData] = useState(template.sampleInput);
+  const [selectedTemplate, setSelectedTemplate] = useState(templateOne);
+  const [data, setData] = useState(selectedTemplate.sampleInput);
   const [error, setError] = useState("");
   const [json, setJson] = useState(() => {
-    const result = template.buildJson(data);
+    const result = selectedTemplate.buildJson(data);
     if (result.success) {
       return result.json;
     } else {
@@ -26,7 +27,7 @@ export default function Home() {
   });
 
   const changeTemplate = (nextTemplate: Template<any>) => {
-    setTemplate(nextTemplate);
+    setSelectedTemplate(nextTemplate);
     const nextData = nextTemplate.sampleInput;
     setData(nextData);
     const result = nextTemplate.buildJson(nextData);
@@ -42,20 +43,38 @@ export default function Home() {
       <Head>
         <title>Visual Abstract Generator</title>
       </Head>
-      <div style={{ padding: 30 }}>
+      <Stack
+        spacing={4}
+        direction={"column"}
+        alignItems={"center"}
+        justifyContent={"center"}
+        sx={{ padding: 4 }}
+      >
         <div>
-          <Button onClick={() => changeTemplate(templateOne)}>
-            Template 1
-          </Button>
-          <Button onClick={() => changeTemplate(templateThree)}>
-            Template 3
-          </Button>
-          <Button onClick={() => changeTemplate(templateFour)}>
-            Template 4
-          </Button>
-          <Button onClick={() => changeTemplate(templateSeven)}>
-            Template 7
-          </Button>
+          {templates.map((template) => {
+            return (
+              <Button
+                color={"secondary"}
+                variant={
+                  selectedTemplate.id === template.id ? "contained" : "text"
+                }
+                sx={{
+                  padding: 2,
+                  display: "inline-flex",
+                  flexDirection: "column",
+                  gap: 2,
+                }}
+                key={template.id}
+                onClick={() => changeTemplate(template)}
+              >
+                <img
+                  style={{ width: 120, height: "auto" }}
+                  src={template.previewUrl}
+                />
+                <span>{template.id}</span>
+              </Button>
+            );
+          })}
         </div>
         <textarea
           style={{ height: 500, width: 500 }}
@@ -63,7 +82,7 @@ export default function Home() {
           onChange={(e) => {
             let parameterInput = e.target.value;
             setData(parameterInput);
-            const result = template.buildJson(parameterInput);
+            const result = selectedTemplate.buildJson(parameterInput);
             if (result.success) {
               setJson(result.json);
             } else {
@@ -74,10 +93,10 @@ export default function Home() {
         <p>{error}</p>
         <DynamicCanvas
           json={json}
-          height={template.height}
-          width={template.width}
+          height={selectedTemplate.height}
+          width={selectedTemplate.width}
         />
-      </div>
+      </Stack>
     </>
   );
 }

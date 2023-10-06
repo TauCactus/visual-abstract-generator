@@ -12,7 +12,8 @@ const TemplateSevenForm = z.object({
 });
 
 export const templateSeven = new Template({
-  id: "template-3",
+  previewUrl: "/template-preview/template-7.png",
+  id: "template-7",
   inputParser: TemplateSevenForm,
   jsonTemplate: jsonTemplate,
   width: 500,

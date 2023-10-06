@@ -25,25 +25,32 @@ export class Template<T extends ZodTypeAny> {
   private readonly _width: number;
   private readonly _height: number;
   private readonly _sampleInput: string;
+  private readonly _previewUrl: string;
   constructor({
     id,
     jsonTemplate,
     inputParser,
     width,
     height,
+    previewUrl,
   }: {
     id: string;
     jsonTemplate: unknown;
     inputParser: T;
     width: number;
     height: number;
+    previewUrl: string;
   }) {
     this._id = id;
-    this._inputParser = inputParser;
+    (this._previewUrl = previewUrl), (this._inputParser = inputParser);
     this._jsonTemplate = parse(JSON.stringify(jsonTemplate));
     this._sampleInput = JSON.stringify(mocker(inputParser));
     this._width = width;
     this._height = height;
+  }
+
+  get id(): string {
+    return this._id;
   }
 
   buildJson(input: string): SuccessRender | ErrorRender {
@@ -80,6 +87,10 @@ export class Template<T extends ZodTypeAny> {
 
   get sampleInput(): string {
     return this._sampleInput;
+  }
+
+  get previewUrl(): string {
+    return this._previewUrl;
   }
 }
 
