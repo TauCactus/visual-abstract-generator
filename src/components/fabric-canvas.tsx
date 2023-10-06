@@ -1,13 +1,13 @@
 import { fabric } from "fabric";
-import {useEffect, useState} from "react";
-export const FabricCanvas = (props: {
+import { useEffect, useState } from "react";
+const FabricCanvas = (props: {
   json: unknown;
   height: number;
   width: number;
 }) => {
   const [isSSR, setIsSSR] = useState(true);
   useEffect(() => {
-    if(isSSR) {
+    if (isSSR) {
       setIsSSR(false);
       return;
     }
@@ -21,6 +21,10 @@ export const FabricCanvas = (props: {
       preserveObjectStacking: true,
     });
     instance.loadFromJSON(props.json, () => {});
-  }, [props.json,isSSR]);
+  }, [props.json, isSSR]);
+  if (isSSR) {
+    return <div></div>;
+  }
   return <canvas id="fabric-canvas"></canvas>;
 };
+export default FabricCanvas;
