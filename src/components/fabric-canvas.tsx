@@ -30,10 +30,6 @@ const FabricCanvas = (props: {
           preserveObjectStacking: true,
         });
         (instanceRef.current as any) = instance;
-        instance.clear();
-        instance.renderAll();
-        instance.renderAndReset();
-        instance.requestRenderAll();
         instance.loadFromJSON(props.json, () => {
           if (!(props.dontScaleImage ?? false)) {
             instance.forEachObject(function (obj) {
