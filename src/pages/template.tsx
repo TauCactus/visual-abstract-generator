@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { templateOne } from "@/mtg-templates/template-1/template-one-form";
 import { Template } from "@/mtg-templates/template";
 import { Box, Button, Stack } from "@mui/material";
@@ -25,6 +25,17 @@ export default function Home() {
       throw new Error("All wrong :(");
     }
   });
+  useEffect(() => {
+    selectedTemplate.prepareInput(data).then((preparedData) => {
+      const result = selectedTemplate.buildJson(preparedData);
+      if (result.success) {
+        setError("");
+        setJson(result.json);
+      } else {
+        setError(result.error);
+      }
+    });
+  }, [data]);
 
   const changeTemplate = (nextTemplate: Template<any>) => {
     setSelectedTemplate(nextTemplate);
@@ -88,13 +99,6 @@ export default function Home() {
           onChange={(e) => {
             let parameterInput = e.target.value;
             setData(parameterInput);
-            const result = selectedTemplate.buildJson(parameterInput);
-            if (result.success) {
-                setError('');
-              setJson(result.json);
-            } else {
-              setError(result.error);
-            }
           }}
         />
         <p>{error}</p>

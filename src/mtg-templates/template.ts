@@ -53,6 +53,18 @@ export class Template<T extends ZodTypeAny> {
     return this._id;
   }
 
+  async prepareInput(input: string) {
+    try {
+      let parsedInput = JSON.parse(input);
+      let updatedImages = await updateImages(parsedInput);
+      console.log(updatedImages);
+      return JSON.stringify(updatedImages);
+    } catch (err) {
+      console.warn(err);
+      return input;
+    }
+  }
+
   buildJson(input: string): SuccessRender | ErrorRender {
     let inputParsed = null;
     try {
@@ -110,4 +122,34 @@ function mocker<T extends ZodTypeAny>(template: T) {
 function camelCaseToSpace(text: string) {
   const result = text.replace(/([A-Z])/g, " $1");
   return result.charAt(0).toUpperCase() + result.slice(1).toLowerCase();
+}
+
+async function updateImages(input: unknown) {
+  if (!input) {
+    return input;
+  }
+  if (typeof input !== "object") {
+    return input;
+  }
+  const inputCloned = JSON.parse(JSON.stringify(input));
+  const promises = Object.keys(input).map(async (key) => {
+    if (key.toLowerCase().includes("image")) {
+      const url = (inputCloned as any)[key];
+      if (typeof url === "string") {
+        if (!url.includes("http")) {
+          const query = url.split(", ").join("+");
+          const fetchResult = await fetch(
+            `https://search-staging.mindthegraph.com/api/images/search?q=${query}`,
+          );
+          const json = await fetchResult.json();
+          const image = json.images[0];
+          (inputCloned as any)[
+            key
+          ] = `https://s3-us-west-2.amazonaws.com/svg.mindthegraph.com/realistic/${image.file_name}/${image.file_name}-04.svg`;
+        }
+      }
+    }
+  });
+  await Promise.all(promises);
+  return inputCloned;
 }
