@@ -90,6 +90,7 @@ export default function Home() {
             setData(parameterInput);
             const result = selectedTemplate.buildJson(parameterInput);
             if (result.success) {
+                setError('');
               setJson(result.json);
             } else {
               setError(result.error);
