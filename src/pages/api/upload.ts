@@ -1,18 +1,29 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
+import formidable from "formidable";
+import { promises as fs } from "fs";
+import { uploadFileToGcpBackend } from "@/server/gcp-backend";
 
-type Data = {
-  imageUrl: string;
-};
+type Data = { request_id: string };
 
-const sleep = (milliseconds: number) => {
-  return new Promise((resolve) => setTimeout(resolve, milliseconds));
+export const config = {
+  api: {
+    bodyParser: false,
+  },
 };
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>,
 ) {
-  await sleep(3000);
-  res.status(200).json({ imageUrl: "/example-abstract.png" });
+  const form = formidable({});
+  const [_, files] = await form.parse(req);
+  if (!files.file?.[0]) {
+    throw new Error("No file uploaded");
+  }
+  const file = files.file[0];
+  const buffer = await fs.readFile(file.filepath);
+  const blob = new Blob([buffer]);
+  const response = await uploadFileToGcpBackend(blob, file.originalFilename!);
+
+  res.status(200).json(response);
 }

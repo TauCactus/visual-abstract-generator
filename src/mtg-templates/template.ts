@@ -26,6 +26,7 @@ export class Template<T extends ZodTypeAny> {
   private readonly _height: number;
   private readonly _sampleInput: string;
   private readonly _previewUrl: string;
+  private _trim: { [key: string]: number };
   constructor({
     id,
     jsonTemplate,
@@ -33,6 +34,7 @@ export class Template<T extends ZodTypeAny> {
     width,
     height,
     previewUrl,
+    trim,
   }: {
     id: string;
     jsonTemplate: unknown;
@@ -40,7 +42,9 @@ export class Template<T extends ZodTypeAny> {
     width: number;
     height: number;
     previewUrl: string;
+    trim: { [key: string]: number };
   }) {
+    this._trim = trim;
     this._id = id;
     (this._previewUrl = previewUrl), (this._inputParser = inputParser);
     this._jsonTemplate = parse(JSON.stringify(jsonTemplate));
@@ -57,7 +61,6 @@ export class Template<T extends ZodTypeAny> {
     try {
       let parsedInput = JSON.parse(input);
       let updatedImages = await updateImages(parsedInput);
-      console.log(updatedImages);
       return JSON.stringify(updatedImages);
     } catch (err) {
       console.warn(err);
@@ -77,9 +80,17 @@ export class Template<T extends ZodTypeAny> {
     }
     const result = this._inputParser.safeParse(inputParsed);
     if (result.success) {
+      const clone = JSON.parse(JSON.stringify(result.data));
+      Object.keys(clone).forEach((key) => {
+        let trimElement = this._trim[key];
+        if (trimElement === undefined) {
+          return;
+        }
+        clone[key] = clone[key].substring(0, trimElement);
+      });
       return {
         success: true,
-        json: this._jsonTemplate(result.data),
+        json: this._jsonTemplate(clone),
       };
     } else {
       return {
