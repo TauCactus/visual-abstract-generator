@@ -1,6 +1,7 @@
 import { fabric } from "fabric";
 import { useEffect, useRef, useState } from "react";
 import WebFont from "webfontloader";
+
 const FabricCanvas = (props: {
   dontScaleImage?: boolean;
   json: unknown;
@@ -9,6 +10,7 @@ const FabricCanvas = (props: {
 }) => {
   const [isSSR, setIsSSR] = useState(true);
   const instanceRef = useRef<fabric.Canvas>(null);
+  const [svg, setSvg] = useState("");
   useEffect(() => {
     if (isSSR) {
       setIsSSR(false);
@@ -51,6 +53,10 @@ const FabricCanvas = (props: {
               }
             });
             instance.renderAll();
+            setSvg(instance.toSVG());
+            setTimeout(() => {
+              setSvg(instance.toSVG());
+            }, 1000);
           }
         });
       },
@@ -60,10 +66,22 @@ const FabricCanvas = (props: {
     return <div></div>;
   }
   return (
-    <canvas
-      style={{ pointerEvents: "none", touchAction: "none" }}
-      id="fabric-canvas"
-    ></canvas>
+    <>
+      <div dangerouslySetInnerHTML={{ __html: svg }} />
+      <canvas
+        style={{
+          position: "fixed",
+          display: "none",
+          width: 1,
+          height: 1,
+          top: 1,
+          left: 1,
+          pointerEvents: "none",
+          touchAction: "none",
+        }}
+        id="fabric-canvas"
+      ></canvas>
+    </>
   );
 };
 export default FabricCanvas;

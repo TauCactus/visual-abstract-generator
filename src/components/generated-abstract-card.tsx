@@ -27,18 +27,17 @@ export const GeneratedVisualAbstractCard = forwardRef<
       elevation={0}
       component={motion.div}
       layoutId={"visual-abstract"}
-      initial={{ rotate: 0, height: 350, width: "100%" }}
+      initial={{ rotate: 0, height: 292, width: "100%" }}
       animate={{ rotate: 0, height: "auto", width: "100%" }}
       sx={{
         overflow: "hidden",
         position: "relative",
         zIndex: 2,
         minHeight: 50,
-        paddingBottom: {
+        marginBottom: {
           lg: 1,
           xs: 5,
         },
-        padding: 1,
       }}
     >
       <Box
@@ -49,7 +48,15 @@ export const GeneratedVisualAbstractCard = forwardRef<
         animate={{ opacity: 1, transition: { delay: 0.3 } }}
         sx={{ width: "100%", height: "auto", borderRadius: "12px" }}
       />
-      <DynamicCanvas width={500} height={200} json={json} />
+      <Box
+        sx={{
+          ["svg"]: { width: "100%", height: "auto" },
+          [".canvas-container"]: { display: "none" },
+          maxHeight: 292,
+        }}
+      >
+        <DynamicCanvas width={500} height={200} json={json} />
+      </Box>
     </Card>
   );
 });
