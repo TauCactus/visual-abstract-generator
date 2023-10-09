@@ -73,11 +73,11 @@ function anyTemplateToTemplate(anyTemplate: AnyTemplate): Template<any> {
   switch (anyTemplate.inforgraphics) {
     case "Template-1":
       return templateOne;
-    case "Template-3":
+    case "Template-2":
       return templateThree;
-    case "Template-4":
+    case "Template-3":
       return templateFour;
-    case "Template-7":
+    case "Template-4":
       return templateSeven;
   }
 }

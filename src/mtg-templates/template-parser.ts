@@ -8,13 +8,13 @@ const TemplateOneWithIdentifier = TemplateOneForm.merge(
   z.object({ inforgraphics: z.literal("Template-1") }),
 );
 const TemplateThreeWithIdentifier = TemplateThreeForm.merge(
-  z.object({ inforgraphics: z.literal("Template-3") }),
+  z.object({ inforgraphics: z.literal("Template-2") }),
 );
 const TemplateFourWithIdentifier = TemplateFourForm.merge(
-  z.object({ inforgraphics: z.literal("Template-4") }),
+  z.object({ inforgraphics: z.literal("Template-3") }),
 );
 const TemplateSevenWithIdentifier = TemplateSevenForm.merge(
-  z.object({ inforgraphics: z.literal("Template-7") }),
+  z.object({ inforgraphics: z.literal("Template-4") }),
 );
 
 export const AnyTemplate = z.union([
