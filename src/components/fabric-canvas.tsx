@@ -59,6 +59,11 @@ const FabricCanvas = (props: {
   if (isSSR) {
     return <div></div>;
   }
-  return <canvas id="fabric-canvas"></canvas>;
+  return (
+    <canvas
+      style={{ pointerEvents: "none", touchAction: "none" }}
+      id="fabric-canvas"
+    ></canvas>
+  );
 };
 export default FabricCanvas;

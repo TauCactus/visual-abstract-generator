@@ -3,13 +3,13 @@ import { Template } from "@/mtg-templates/template";
 import jsonTemplate from "./template-three.json";
 
 export const TemplateThreeForm = z.object({
-  title: z.string().max(59, "Title is max 59 chars"),
-  textOne: z.string().max(104, "TextOne is max 104 chars"),
-  titleTextOne: z.string().max(15, "titleTextOne is max 15 chars"),
-  textTwo: z.string().max(104, "textTwo is max 104 chars"),
-  titleTextTwo: z.string().max(15, "titleTextTwo is max 15 chars"),
-  textThree: z.string().max(104, "textThree is max 104 chars"),
-  titleTextThree: z.string().max(15, "titleTextThree is max 15 chars"),
+  title: z.string(),
+  textOne: z.string(),
+  titleTextOne: z.string(),
+  textTwo: z.string(),
+  titleTextTwo: z.string(),
+  textThree: z.string(),
+  titleTextThree: z.string(),
   imageOne: z.string(),
   imageTwo: z.string(),
   imageThree: z.string(),
@@ -22,4 +22,13 @@ export const templateThree = new Template({
   jsonTemplate: jsonTemplate,
   width: 500,
   height: 200,
+  trim: {
+    title: 59,
+    textOne: 104,
+    titleTextOne: 14,
+    textTwo: 103,
+    titleTextTwo: 14,
+    textThree: 104,
+    titleTextThree: 14,
+  },
 });

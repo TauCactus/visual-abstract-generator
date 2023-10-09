@@ -2,13 +2,13 @@ import Head from "next/head";
 import { Box, Stack } from "@mui/material";
 import { UploadCard } from "@/components/upload-card";
 import { useEffect, useRef, useState } from "react";
-import { useUpload } from "@/api/api";
+import { usePolling, useUpload } from "@/api/api";
 import { GeneratingCard } from "@/components/generating-card";
-import { VisualAbstractCard } from "@/components/visual-abstract-card";
 import Image from "next/image";
 import { Lottie } from "@/lottie/lottie";
 import heart from "@/lottie/lotties/heart.json";
-import {useRouter} from "next/router";
+import { useRouter } from "next/router";
+import { GeneratedVisualAbstractCard } from "@/components/generated-abstract-card";
 
 export default function Home() {
   const [file, setFile] = useState<null | File>(null);
@@ -16,17 +16,22 @@ export default function Home() {
   const [startAnimation, setStartAnimation] = useState(false);
   const state = file ? (data ? "result" : "generating") : "idle";
   const router = useRouter();
+  const { query } = useRouter();
+  const { data: resultData } = usePolling(
+    typeof query.id === "string" ? query.id : undefined,
+  );
   const setFileAndUpload = async (file: null | File) => {
-    if(file){
+    if (file) {
       setFile(file);
       const response = await mutateAsync(file);
-      router.query.document = response.id;
+      router.query.id = response.request_id;
       await router.push(router);
     }
   };
   const idleElement = useRef<HTMLElement>(null);
   const resultElement = useRef<HTMLDivElement>(null);
   const generatingElement = useRef<HTMLElement>(null);
+  const stepOneComplete = file || query.id !== undefined;
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -126,7 +131,7 @@ export default function Home() {
           <Stack
             direction={{ lg: "row", xs: "column" }}
             justifyContent={{
-              lg: file ? "space-between" : "space-evenly",
+              lg: stepOneComplete ? "space-between" : "space-evenly",
               xs: "flex-start",
             }}
             spacing={2}
@@ -136,18 +141,21 @@ export default function Home() {
               file={file}
               setFile={setFileAndUpload}
             />
-            {file && (
+            {stepOneComplete && (
               <GeneratingCard
                 ref={generatingElement}
                 regenerate={async () => {
                   reset();
                 }}
-                done={data !== undefined}
+                done={resultData?.status === "ready"}
               />
             )}
           </Stack>
-          {data && file && (
-            <VisualAbstractCard ref={resultElement} imageSrc={data.imageUrl} />
+          {resultData && resultData.status === "ready" && (
+            <GeneratedVisualAbstractCard
+              ref={resultElement}
+              template={resultData.template}
+            />
           )}
         </Stack>
       </Box>

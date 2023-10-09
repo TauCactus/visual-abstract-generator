@@ -3,14 +3,14 @@ import { Template } from "@/mtg-templates/template";
 import jsonTemplate from "./template-four.json";
 
 export const TemplateFourForm = z.object({
-  title: z.string().max(76, "Title is max 76 chars"),
-  subtitle: z.string().max(14, "subtitle is max 14 chars"),
-  caption: z.string().max(11, "caption is max 11 chars"),
+  title: z.string(),
+  subtitle: z.string(),
+  caption: z.string(),
   captionImage: z.string(),
-  textOne: z.string().max(190, "textOne is max 190 chars"),
-  textTwo: z.string().max(190, "textTwo is max 190 chars"),
-  textThree: z.string().max(190, "textThree is max 190 chars"),
-  textFour: z.string().max(190, "textFour is max 190 chars"),
+  textOne: z.string(),
+  textTwo: z.string(),
+  textThree: z.string(),
+  textFour: z.string(),
   imageOne: z.string(),
   imageTwo: z.string(),
   imageThree: z.string(),
@@ -24,4 +24,13 @@ export const templateFour = new Template({
   jsonTemplate: jsonTemplate,
   width: 500,
   height: 200,
+  trim: {
+    title: 76,
+    subtitle: 14,
+    caption: 11,
+    textOne: 190,
+    textTwo: 190,
+    textThree: 190,
+    textFour: 190,
+  },
 });
