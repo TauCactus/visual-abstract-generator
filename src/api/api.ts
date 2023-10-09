@@ -13,7 +13,7 @@ export const useUpload = () => {
             method: 'POST',
             body: formData,
             headers: {
-                authorization: 'bearer test'
+                authorization: 'test'
             }
         })
         const resultJson = await result.json()
