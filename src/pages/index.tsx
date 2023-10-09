@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { Box, Stack } from "@mui/material";
+import { Alert, Box, Snackbar, Stack } from "@mui/material";
 import { UploadCard } from "@/components/upload-card";
 import { useEffect, useRef, useState } from "react";
 import { usePolling, useUpload } from "@/api/api";
@@ -12,17 +12,20 @@ import { GeneratedVisualAbstractCard } from "@/components/generated-abstract-car
 
 export default function Home() {
   const [file, setFile] = useState<null | File>(null);
-  const { mutateAsync, data, reset } = useUpload();
+  const { mutateAsync, error, data, reset } = useUpload();
+  const [requestStart, setRequestStart] = useState<null | Date>(null);
   const [startAnimation, setStartAnimation] = useState(false);
   const state = file ? (data ? "result" : "generating") : "idle";
   const router = useRouter();
   const { query } = useRouter();
-  const { data: resultData } = usePolling(
+  const { data: resultData, error: pollingError } = usePolling(
     typeof query.id === "string" ? query.id : undefined,
   );
+  const allErrors = error ?? pollingError;
   const setFileAndUpload = async (file: null | File) => {
     if (file) {
       setFile(file);
+      setRequestStart(new Date());
       const response = await mutateAsync(file);
       router.query.id = response.request_id;
       await router.push(router);
@@ -144,9 +147,7 @@ export default function Home() {
             {stepOneComplete && (
               <GeneratingCard
                 ref={generatingElement}
-                regenerate={async () => {
-                  reset();
-                }}
+                requestStart={requestStart}
                 done={resultData?.status === "ready"}
               />
             )}
@@ -158,6 +159,16 @@ export default function Home() {
             />
           )}
         </Stack>
+        <Snackbar
+          anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
+          open={Boolean(error)}
+        >
+          <Alert severity="error" sx={{ width: "100%" }}>
+            {typeof allErrors === "string"
+              ? allErrors
+              : "An error has occurred"}
+          </Alert>
+        </Snackbar>
       </Box>
     </>
   );

@@ -1,4 +1,4 @@
-import { Box, Button, LinearProgress } from "@mui/material";
+import { Box, Button, LinearProgress, Typography } from "@mui/material";
 import {
   CardHeader,
   StateCard,
@@ -8,15 +8,27 @@ import {
 import { Lottie } from "@/lottie/lottie";
 import reading from "@/lottie/lotties/reading.json";
 import { AnimatePresence, motion } from "framer-motion";
-import { forwardRef } from "react";
+import { forwardRef, useEffect, useState } from "react";
 
 export const GeneratingCard = forwardRef<
   HTMLElement,
   {
     done: boolean;
-    regenerate: () => void;
+    requestStart: null | Date;
   }
 >((props, ref) => {
+  const [elapsedTime, setElapsedTime] = useState("");
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (!props.requestStart) {
+        return;
+      }
+      setElapsedTime(calculateTimeElapsedSince(props.requestStart));
+    }, 100);
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [props.requestStart]);
   return (
     <StateCardContainer ref={ref}>
       <StateCard
@@ -29,6 +41,31 @@ export const GeneratingCard = forwardRef<
           captionIdle={"Analyzing manuscript"}
           captionCompleted={"Analysis complete"}
         />
+        {!props.done && (
+          <Typography
+            component={motion.p}
+            key={"caption"}
+            initial={{ opacity: 0, translateY: 15 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            exit={{ opacity: 0, translateY: 15 }}
+            variant={"caption"}
+          >
+            It might take up to 2 minutes
+          </Typography>
+        )}
+        {!props.done && (
+          <Typography
+            component={motion.p}
+            key={"elapsed"}
+            initial={{ opacity: 0, translateY: 15 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            exit={{ opacity: 0, translateY: 15 }}
+            variant={"body2"}
+          >
+            Time elapsed {elapsedTime}
+          </Typography>
+        )}
+
         <Lottie
           height={200}
           width={200}
@@ -46,19 +83,6 @@ export const GeneratingCard = forwardRef<
               component={motion.div}
             />
           )}
-          {props.done && (
-            <Button
-              key={"done"}
-              initial={{ opacity: 0, translateY: 15 }}
-              animate={{ opacity: 1, translateY: 0 }}
-              exit={{ opacity: 0, translateY: 15 }}
-              component={motion.button}
-              variant={"text"}
-              onClick={props.regenerate}
-            >
-              Generate another one
-            </Button>
-          )}
         </AnimatePresence>
         {!props.done && (
           <LinearProgress
@@ -72,3 +96,18 @@ export const GeneratingCard = forwardRef<
   );
 });
 GeneratingCard.displayName = "GeneratingCard";
+
+function calculateTimeElapsedSince(date: Date) {
+  const currentDate = new Date();
+  const timeDifferenceInSeconds = Math.floor(
+    (currentDate.getTime() - date.getTime()) / 1000,
+  ); // Convert milliseconds to seconds
+  const minutes = Math.floor(timeDifferenceInSeconds / 60);
+  const seconds = timeDifferenceInSeconds % 60;
+
+  // Format the result as "mm:ss"
+  const formattedMinutes = String(minutes).padStart(2, "0");
+  const formattedSeconds = String(seconds).padStart(2, "0");
+
+  return `${formattedMinutes}:${formattedSeconds}`;
+}
