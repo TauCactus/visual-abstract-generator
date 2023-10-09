@@ -14,10 +14,11 @@ import { AnimatePresence, motion } from "framer-motion";
 export const UploadCard = forwardRef<
   HTMLElement,
   {
+    done: boolean;
     file: File | null;
     setFile: (file: null | File) => void;
   }
->(({ file, setFile }, ref) => {
+>(({ done, file, setFile }, ref) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -45,7 +46,7 @@ export const UploadCard = forwardRef<
           captionCompleted={"Uploaded"}
           captionIdle={"Upload manuscript"}
         />
-        {!file && (
+        {!done && (
           <Box component={motion.div}>
             <Lottie
               key={"idle"}
@@ -55,7 +56,7 @@ export const UploadCard = forwardRef<
             />
           </Box>
         )}
-        {file && (
+        {done && (
           <Lottie
             key={"uploaded"}
             loop={false}
@@ -73,7 +74,7 @@ export const UploadCard = forwardRef<
           style={{ display: "none" }}
         />
         <AnimatePresence mode={"wait"} initial={false}>
-          {file && (
+          {done && (
             <Chip
               key={"chip"}
               component={motion.div}
@@ -81,12 +82,11 @@ export const UploadCard = forwardRef<
               animate={{ opacity: 1, translateY: 0 }}
               exit={{ opacity: 0, translateY: 15 }}
               sx={{ maxWidth: 220 }}
-              label={file.name}
+              label={file?.name ?? "Previous uploaded file"}
               variant="outlined"
-              onDelete={clearFile}
             />
           )}
-          {!file && (
+          {!done && (
             <Button
               key={"button"}
               initial={{ opacity: 0, translateY: -15 }}
@@ -101,7 +101,7 @@ export const UploadCard = forwardRef<
           )}
         </AnimatePresence>
       </StateCard>
-      {!file && <StateCardBehind layoutId={"generating"} />}
+      {!done && <StateCardBehind layoutId={"generating"} />}
     </StateCardContainer>
   );
 });

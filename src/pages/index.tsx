@@ -8,6 +8,14 @@ import Image from "next/image";
 import { Lottie } from "@/lottie/lottie";
 import heart from "@/lottie/lotties/heart.json";
 import { useRouter } from "next/router";
+import dynamic from "next/dynamic";
+const DynamicSvgGenerator = dynamic(
+  () => import("../components/svg-generator"),
+  {
+    ssr: false,
+    loading: () => <p>Loading...</p>,
+  },
+);
 import { GeneratedVisualAbstractCard } from "@/components/generated-abstract-card";
 
 export default function Home() {
@@ -35,6 +43,7 @@ export default function Home() {
   const resultElement = useRef<HTMLDivElement>(null);
   const generatingElement = useRef<HTMLElement>(null);
   const stepOneComplete = file || query.id !== undefined;
+  const [svg, setSvg] = useState("");
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -96,6 +105,14 @@ export default function Home() {
         <meta name="theme-color" content="#f5f5f5" />
       </Head>
       <Box sx={{ marginLeft: 2, marginRight: 2 }}>
+        <DynamicSvgGenerator
+          template={
+            resultData && resultData.status === "ready"
+              ? resultData.template
+              : undefined
+          }
+          svgCallback={setSvg}
+        />
         <Stack
           sx={{ maxWidth: 300, margin: "0 auto", marginBottom: 4 }}
           direction={"row"}
@@ -140,6 +157,7 @@ export default function Home() {
             spacing={2}
           >
             <UploadCard
+              done={Boolean(file) || (query.id?.length ?? 0) > 0}
               ref={idleElement}
               file={file}
               setFile={setFileAndUpload}
@@ -148,15 +166,12 @@ export default function Home() {
               <GeneratingCard
                 ref={generatingElement}
                 requestStart={requestStart}
-                done={resultData?.status === "ready"}
+                done={svg.length > 0}
               />
             )}
           </Stack>
-          {resultData && resultData.status === "ready" && (
-            <GeneratedVisualAbstractCard
-              ref={resultElement}
-              template={resultData.template}
-            />
+          {svg.length > 0 && (
+            <GeneratedVisualAbstractCard ref={resultElement} svg={svg} />
           )}
         </Stack>
         <Snackbar

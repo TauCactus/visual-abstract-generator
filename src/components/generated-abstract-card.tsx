@@ -1,26 +1,11 @@
 import { Box, Card } from "@mui/material";
 import { motion } from "framer-motion";
-import { forwardRef, useEffect, useMemo, useState } from "react";
-import dynamic from "next/dynamic";
-import { AnyTemplate } from "@/mtg-templates/template-parser";
-import { Template } from "@/mtg-templates/template";
-import { templateOne } from "@/mtg-templates/template-1/template-one-form";
-import { templateThree } from "@/mtg-templates/template-3/template-three-form";
-import { templateFour } from "@/mtg-templates/template-4/template-four-form";
-import { templateSeven } from "@/mtg-templates/template-7/template-seven-form";
+import { forwardRef } from "react";
 
-const DynamicCanvas = dynamic(() => import("../components/fabric-canvas"), {
-  ssr: false,
-  loading: () => <p>Loading...</p>,
-});
 export const GeneratedVisualAbstractCard = forwardRef<
   HTMLDivElement,
-  { template: AnyTemplate }
+  { svg: string }
 >((props, ref) => {
-  const [json, setJson] = useState<unknown>({});
-  useEffect(() => {
-    generateTemplateJson(props.template, setJson);
-  }, [props.template]);
   return (
     <Card
       ref={ref}
@@ -46,47 +31,17 @@ export const GeneratedVisualAbstractCard = forwardRef<
         component={motion.div}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1, transition: { delay: 0.3 } }}
-        sx={{ width: "100%", height: "auto", borderRadius: "12px" }}
-      />
-      <Box
         sx={{
-          ["svg"]: { width: "100%", height: "auto" },
-          [".canvas-container"]: { display: "none" },
-          maxHeight: 292,
+          width: "100%",
+          height: "auto",
+          borderRadius: "12px",
+          marginBottom: -1,
+          svg: { width: "100%", height: "auto" },
         }}
-      >
-        <DynamicCanvas width={500} height={200} json={json} />
-      </Box>
+        dangerouslySetInnerHTML={{ __html: props.svg }}
+      />
     </Card>
   );
 });
-
-async function generateTemplateJson(
-  anyTemplate: AnyTemplate,
-  callback: (json: unknown) => void,
-) {
-  const template = anyTemplateToTemplate(anyTemplate);
-  const prepped = await template.prepareInput(JSON.stringify(anyTemplate));
-  const json = template.buildJson(prepped);
-
-  if (json.success) {
-    return callback(json.json);
-  } else {
-    throw new Error(json.error);
-  }
-}
-
-function anyTemplateToTemplate(anyTemplate: AnyTemplate): Template<any> {
-  switch (anyTemplate.inforgraphics) {
-    case "Template-1":
-      return templateOne;
-    case "Template-2":
-      return templateThree;
-    case "Template-3":
-      return templateFour;
-    case "Template-4":
-      return templateSeven;
-  }
-}
 
 GeneratedVisualAbstractCard.displayName = "GeneratedVisualAbstractCard";
