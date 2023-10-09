@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { Template } from "@/mtg-templates/template";
 import jsonTemplate from "./template-one.json";
-const TemplateOneForm = z.object({
+export const TemplateOneForm = z.object({
   title: z.string().max(64, "Title is max 64 chars"),
   textOne: z.string().max(97, "TextOne is max 97 chars"),
   textTwo: z.string().max(97, "textTwo is max 97 chars"),

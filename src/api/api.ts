@@ -9,11 +9,15 @@ export const useUpload = () => {
     mutationFn: async (file : File) => {
         const formData = new FormData();
         formData.append('file', file);
-        const result = await fetch("/api/upload",  {
+        const result = await fetch("http://35.224.199.191:8080/process_pdf_async",  {
             method: 'POST',
             body: formData,
+            headers: {
+                authorization: 'bearer test'
+            }
         })
         const resultJson = await result.json()
+        console.log(resultJson);
         return UploadResponse.parse(resultJson);
     },
   });
