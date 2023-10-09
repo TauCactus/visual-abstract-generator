@@ -13,7 +13,7 @@ const DynamicSvgGenerator = dynamic(
   () => import("../components/svg-generator"),
   {
     ssr: false,
-    loading: () => <p>Loading...</p>,
+    loading: () => <></>,
   },
 );
 import { GeneratedVisualAbstractCard } from "@/components/generated-abstract-card";
