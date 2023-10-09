@@ -153,14 +153,16 @@ async function updateImages(input: unknown) {
             `https://search-staging.mindthegraph.com/api/images/search?q=${query}`,
           );
           const json = await fetchResult.json();
-          const image = json.images[0];
-          (inputCloned as any)[
-            key
-          ] = `https://s3-us-west-2.amazonaws.com/svg.mindthegraph.com/realistic/${image.file_name}/${image.file_name}-04.svg`;
+          if (json.images.length > 0) {
+            const image = json.images[0];
+            (inputCloned as any)[
+              key
+            ] = `https://s3-us-west-2.amazonaws.com/svg.mindthegraph.com/realistic/${image.file_name}/${image.file_name}-04.svg`;
+          }
         }
       }
     }
   });
-  await Promise.all(promises);
+  await Promise.allSettled(promises);
   return inputCloned;
 }
