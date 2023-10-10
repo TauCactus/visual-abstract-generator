@@ -20,9 +20,9 @@ export const templateSeven = new Template({
   width: 500,
   height: 240,
   trim: {
-    bubbleText: 25,
-    textOne: 124,
-    textTwo: 124,
+    bubbleText: 24,
+    textOne: 100,
+    textTwo: 100,
     conclusion: 182,
   },
 });

@@ -20,10 +20,10 @@ export const templateOne = new Template({
   width: 500,
   height: 240,
   trim: {
-    title: 65,
-    textOne: 97,
-    textTwo: 97,
-    textThree: 97,
+    title: 62,
+    textOne: 96,
+    textTwo: 96,
+    textThree: 96,
     conclusion: 182,
   },
 });
