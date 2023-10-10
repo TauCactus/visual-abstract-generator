@@ -104,6 +104,7 @@ export default function Home() {
         <meta name="msapplication-TileColor" content="#da532c" />
         <meta name="theme-color" content="#f5f5f5" />
       </Head>
+      Hello world
       <Box sx={{ marginLeft: 2, marginRight: 2 }}>
         <DynamicSvgGenerator
           template={
