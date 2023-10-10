@@ -15,6 +15,7 @@ export const TemplateFourForm = z.object({
   imageTwo: z.string(),
   imageThree: z.string(),
   imageFour: z.string(),
+  conclusion: z.string().default("conclusion"),
 });
 
 export const templateFour = new Template({
@@ -23,7 +24,7 @@ export const templateFour = new Template({
   inputParser: TemplateFourForm,
   jsonTemplate: jsonTemplate,
   width: 500,
-  height: 200,
+  height: 240,
   trim: {
     title: 76,
     subtitle: 14,
@@ -32,5 +33,6 @@ export const templateFour = new Template({
     textTwo: 190,
     textThree: 190,
     textFour: 190,
+    conclusion: 182,
   },
 });

@@ -9,6 +9,7 @@ export const TemplateSevenForm = z.object({
   largeImage: z.string(),
   imageTextOne: z.string(),
   imageTextTwo: z.string(),
+  conclusion: z.string().default("conclusion"),
 });
 
 export const templateSeven = new Template({
@@ -17,10 +18,11 @@ export const templateSeven = new Template({
   inputParser: TemplateSevenForm,
   jsonTemplate: jsonTemplate,
   width: 500,
-  height: 200,
+  height: 240,
   trim: {
     bubbleText: 25,
     textOne: 124,
     textTwo: 124,
+    conclusion: 182,
   },
 });

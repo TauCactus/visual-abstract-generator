@@ -50,7 +50,7 @@ export const GeneratingCard = forwardRef<
             exit={{ opacity: 0, translateY: 15 }}
             variant={"caption"}
           >
-            It might take up to 2 minutes
+            Approximately 40 seconds wait
           </Typography>
         )}
         {!props.done && (
