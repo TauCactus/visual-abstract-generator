@@ -9,20 +9,17 @@ const GCPBackendResponse = z.object({
 export const useUpload = () => {
   return useMutation({
     mutationKey: ["upload"],
-    mutationFn: async (file: File) => {
+    mutationFn: async ({ file, gptKey }: { file: File; gptKey: string }) => {
       const formData = new FormData();
       formData.append("file", file);
+      formData.append("gptKey", gptKey);
       const headers = new Headers();
       headers.append("Authorization", "test");
-      const result = await fetch(
-        //"http://35.224.199.191:8080/process_pdf_async",
-        "/api/upload",
-        {
-          method: "POST",
-          body: formData,
-          headers,
-        },
-      );
+      const result = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+        headers,
+      });
       const resultJson = await result.json();
       return GCPBackendResponse.parse(resultJson);
     },

@@ -30,11 +30,11 @@ export default function Home() {
     typeof query.id === "string" ? query.id : undefined,
   );
   const allErrors = error ?? pollingError;
-  const setFileAndUpload = async (file: null | File) => {
+  const setFileAndUpload = async (file: null | File, gptKey: string) => {
     if (file) {
       setFile(file);
       setRequestStart(new Date());
-      const response = await mutateAsync(file);
+      const response = await mutateAsync({ file, gptKey });
       router.query.id = response.request_id;
       await router.push(router);
     }

@@ -1,4 +1,14 @@
-import { Box, Button, Chip } from "@mui/material";
+import {
+  Box,
+  Button,
+  Chip,
+  FormControl,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+  Stack,
+} from "@mui/material";
 import { Lottie } from "@/lottie/lottie";
 import idle from "@/lottie/lotties/idle.json";
 import uploaded from "@/lottie/lotties/uploaded.json";
@@ -8,31 +18,37 @@ import {
   StateCardContainer,
   CardHeader,
 } from "@/components/state-card";
-import { forwardRef, useRef } from "react";
+import { forwardRef, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 export const UploadCard = forwardRef<
   HTMLElement,
   {
     done: boolean;
     file: File | null;
-    setFile: (file: null | File) => void;
+    setFile: (file: null | File, gptKey: string) => void;
   }
 >(({ done, file, setFile }, ref) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [gptKey, setGptKey] = useState("");
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      setFile(file);
+      setFile(file, gptKey);
     }
   };
 
-  const clearFile = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-    setFile(null);
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    event.preventDefault();
   };
+
   const openFileDialog = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
@@ -50,8 +66,8 @@ export const UploadCard = forwardRef<
           <Box component={motion.div}>
             <Lottie
               key={"idle"}
-              height={200}
-              width={200}
+              height={150}
+              width={150}
               animationData={idle}
             />
           </Box>
@@ -87,17 +103,43 @@ export const UploadCard = forwardRef<
             />
           )}
           {!done && (
-            <Button
-              key={"button"}
+            <Stack
+              direction={"column"}
+              spacing={1}
+              component={motion.div}
+              key={"input"}
               initial={{ opacity: 0, translateY: -15 }}
               animate={{ opacity: 1, translateY: 0 }}
               exit={{ opacity: 0, translateY: -15 }}
-              component={motion.button}
-              variant={"contained"}
-              onClick={openFileDialog}
             >
-              Choose file
-            </Button>
+              <FormControl variant="outlined">
+                <InputLabel htmlFor="outlined-adornment-password">
+                  GPT key
+                </InputLabel>
+                <OutlinedInput
+                  id="outlined-adornment-password"
+                  type={showPassword ? "text" : "password"}
+                  onChange={(event) => setGptKey(event.target.value)}
+                  value={gptKey}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  label="Password"
+                />
+              </FormControl>
+              <Button variant={"contained"} onClick={openFileDialog}>
+                Choose file
+              </Button>
+            </Stack>
           )}
         </AnimatePresence>
       </StateCard>
